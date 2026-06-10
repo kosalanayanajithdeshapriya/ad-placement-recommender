@@ -39,28 +39,36 @@ def build_flow():
     return flow
 
 def get_credentials():
+    # Already authenticated this session
     if "google_creds" in st.session_state:
-        creds = Credentials.from_authorized_user_info(
-            st.session_state["google_creds"], SCOPES
-        )
-        if creds.valid:
-            return creds
-        if creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-            st.session_state["google_creds"] = json.loads(creds.to_json())
-            return creds
+        try:
+            creds = Credentials.from_authorized_user_info(
+                st.session_state["google_creds"], SCOPES
+            )
+            if creds.valid:
+                return creds
+            if creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+                st.session_state["google_creds"] = json.loads(creds.to_json())
+                return creds
+        except Exception:
+            del st.session_state["google_creds"]
 
-    params = st.query_params
+    # Check for OAuth callback code in URL
+    params = dict(st.query_params)
     if "code" in params:
         try:
             flow = build_flow()
             flow.fetch_token(code=params["code"])
             creds = flow.credentials
+            # Save BEFORE clearing params
             st.session_state["google_creds"] = json.loads(creds.to_json())
+            st.session_state["just_logged_in"] = True
             st.query_params.clear()
             return creds
         except Exception as e:
-            st.error(f"Login failed: {e}")
+            st.error(f"Login failed: {e}. Please try again.")
+            st.query_params.clear()
             return None
 
     return None
@@ -74,7 +82,6 @@ def show_login_button():
     return auth_url
 
 def logout():
-    if "google_creds" in st.session_state:
-        del st.session_state["google_creds"]
-    if "user_info" in st.session_state:
-        del st.session_state["user_info"]
+    for key in ["google_creds", "just_logged_in", "user_info"]:
+        if key in st.session_state:
+            del st.session_state[key]
