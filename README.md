@@ -1,6 +1,6 @@
 ---
 title: Ad Placement Recommender
-emoji: ??
+emoji: 🎯
 colorFrom: indigo
 colorTo: blue
 sdk: streamlit
