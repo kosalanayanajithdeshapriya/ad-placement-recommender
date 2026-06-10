@@ -10,12 +10,18 @@ import json
 import math
 import pandas as pd
 import plotly.graph_objects as go
+from PIL import Image
 from youtube_auth import get_credentials, show_login_button, logout
 
 # ── Page Config ──
+try:
+    favicon = Image.open("favicon.png")
+except Exception:
+    favicon = "🎯"
+
 st.set_page_config(
     page_title="Ad Placement Recommender",
-    page_icon="🎯",
+    page_icon=favicon,
     layout="wide"
 )
 
