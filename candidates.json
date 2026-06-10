@@ -1,0 +1,30 @@
+{
+  "total_duration": 454.26666666666665,
+  "candidates": [
+    {
+      "timestamp": 113.87,
+      "type": "scene_change",
+      "score": 92.046
+    },
+    {
+      "timestamp": 186.33,
+      "type": "scene_change",
+      "score": 32.416
+    },
+    {
+      "timestamp": 258.68,
+      "type": "silence",
+      "score": 1.65
+    },
+    {
+      "timestamp": 330.9,
+      "type": "scene_change",
+      "score": 95.956
+    },
+    {
+      "timestamp": 392.02,
+      "type": "silence",
+      "score": 7.15
+    }
+  ]
+}
