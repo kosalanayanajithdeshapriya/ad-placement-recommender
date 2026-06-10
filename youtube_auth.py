@@ -1,5 +1,5 @@
 """
-youtube_auth.py — OAuth2 using session_state, no rerun after token fetch
+youtube_auth.py — OAuth2 using root redirect URI (no PKCE)
 """
 
 import os
@@ -8,6 +8,8 @@ import streamlit as st
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from google.auth.transport.requests import Request
+
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.readonly",
@@ -26,8 +28,8 @@ def get_client_config():
 def get_redirect_uri():
     render_url = os.getenv("RENDER_EXTERNAL_URL")
     if render_url:
-        return f"{render_url}/oauth2callback"
-    return "http://localhost:8501/oauth2callback"
+        return f"{render_url}/"
+    return "http://localhost:8501/"
 
 def build_flow():
     config = get_client_config()
@@ -36,20 +38,28 @@ def build_flow():
         scopes=SCOPES,
         redirect_uri=get_redirect_uri()
     )
+    # Explicitly disable PKCE — google-auth-oauthlib 1.4.0 auto-enables it,
+    # but Streamlit loses session state during the Google redirect so the
+    # code_verifier cannot be persisted.
+    flow.autogenerate_code_verifier = False
+    flow.code_verifier = None
     return flow
 
 def get_credentials():
     params = dict(st.query_params)
 
-    # ── Handle OAuth callback — NO rerun, just save and return ──
+    # ── Handle OAuth callback ──
     if "code" in params:
         try:
             flow = build_flow()
-            flow.fetch_token(code=params["code"])
+            flow.fetch_token(
+                code=params["code"],
+                include_client_id=True
+            )
             creds = flow.credentials
             st.session_state["google_creds"] = creds.to_json()
             st.query_params.clear()
-            return creds  # return directly, no rerun
+            return creds
         except Exception as e:
             st.error(f"Login failed: {e}. Please try again.")
             st.query_params.clear()
@@ -76,7 +86,8 @@ def show_login_button():
     flow = build_flow()
     auth_url, _ = flow.authorization_url(
         prompt="consent",
-        access_type="offline"
+        access_type="offline",
+        include_granted_scopes="true"
     )
     return auth_url
 
