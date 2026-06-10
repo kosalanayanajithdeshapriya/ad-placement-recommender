@@ -1,10 +1,20 @@
+---
+title: Ad Placement Recommender
+emoji: ??
+colorFrom: indigo
+colorTo: blue
+sdk: streamlit
+sdk_version: "1.30.0"
+app_file: dashboard.py
+pinned: false
+---
+
 # Retention-Aware Mid-Roll Ad Placement System
 
 ## Project Structure
-```
+`
 project/
-├── requirements.txt
-├── .env.example
++-- requirements.txt
 ├── simulate_and_test.py       ← Start here (no video needed)
 ├── component1_candidate_generator.py
 ├── component2_feature_extractor.py
