@@ -107,6 +107,7 @@ st.markdown("""
     @keyframes ringPulse {
         0%, 100% { filter: drop-shadow(0 0 3px rgba(99,102,241,0.3)); }
         50%      { filter: drop-shadow(0 0 8px rgba(99,102,241,0.6)); }
+    }
     @keyframes orbFloat1 {
         0%   { transform: translate(0, 0) scale(1); }
         50%  { transform: translate(5vw, 10vh) scale(1.2); }
