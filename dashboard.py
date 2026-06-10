@@ -15,14 +15,9 @@ from PIL import Image
 from youtube_auth import get_credentials, show_login_button, logout
 
 # ── Page Config ──
-try:
-    favicon = Image.open("favicon.png")
-except Exception:
-    favicon = "🎯"
-
 st.set_page_config(
     page_title="Ad Placement Recommender",
-    page_icon=favicon,
+    page_icon="🔮",
     layout="wide"
 )
 
@@ -635,19 +630,15 @@ def build_retention_ring(percent, color, size=76):
               font-family="Inter, sans-serif">{percent:.0f}%</text>
     </svg>"""
 
-def get_base64_image(image_path):
-    try:
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except Exception:
-        return ""
+def get_favicon_base64():
+    return "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EREREREREREREREREREREREREREREREREREREREREREREZGsAPwHz0lJrfIIp0sAAAAASUVORK5CYII="
 
 
 # ═══════════════════════════════════════════════════════════════
 #  HERO HEADER
 # ═══════════════════════════════════════════════════════════════
-favicon_b64 = get_base64_image("favicon.png")
-icon_html = f'<img src="data:image/png;base64,{favicon_b64}" style="height:1.2em; vertical-align:middle; margin-right:0.3rem;" />' if favicon_b64 else "🎯"
+favicon_b64 = get_favicon_base64()
+icon_html = f'<img src="data:image/png;base64,{favicon_b64}" style="height:1.2em; vertical-align:middle; margin-right:0.3rem;" />' if favicon_b64 else "🔮"
 
 st.markdown(f"""
 <div style="animation: fadeInUp 0.5s ease-out both;">
