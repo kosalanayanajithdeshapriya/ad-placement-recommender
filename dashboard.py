@@ -107,7 +107,36 @@ st.markdown("""
     @keyframes ringPulse {
         0%, 100% { filter: drop-shadow(0 0 3px rgba(99,102,241,0.3)); }
         50%      { filter: drop-shadow(0 0 8px rgba(99,102,241,0.6)); }
+    @keyframes orbFloat1 {
+        0%   { transform: translate(0, 0) scale(1); }
+        50%  { transform: translate(5vw, 10vh) scale(1.2); }
+        100% { transform: translate(-5vw, 5vh) scale(0.9); }
     }
+    @keyframes orbFloat2 {
+        0%   { transform: translate(0, 0) scale(1); }
+        50%  { transform: translate(-10vw, -5vh) scale(1.1); }
+        100% { transform: translate(5vw, -10vh) scale(1); }
+    }
+    @keyframes progressPulse {
+        0% { opacity: 0.6; box-shadow: 0 0 10px rgba(99,102,241,0.2); }
+        50% { opacity: 1; box-shadow: 0 0 25px rgba(99,102,241,0.6); }
+        100% { opacity: 0.6; box-shadow: 0 0 10px rgba(99,102,241,0.2); }
+    }
+
+    /* ── Ambient Background Orbs ── */
+    [data-testid="stAppViewContainer"]::before {
+        content: ''; position: fixed; top: -10%; left: -10%; width: 40vw; height: 40vw;
+        background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, rgba(10,14,26,0) 70%);
+        border-radius: 50%; filter: blur(60px); z-index: 0; pointer-events: none;
+        animation: orbFloat1 25s infinite ease-in-out alternate;
+    }
+    [data-testid="stAppViewContainer"]::after {
+        content: ''; position: fixed; bottom: -10%; right: -10%; width: 50vw; height: 50vw;
+        background: radial-gradient(circle, rgba(34,211,238,0.05) 0%, rgba(10,14,26,0) 70%);
+        border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none;
+        animation: orbFloat2 30s infinite ease-in-out alternate-reverse;
+    }
+    .main .block-container { z-index: 1; position: relative; }
 
     /* ── Hero Title ── */
     .hero-title {
@@ -144,8 +173,9 @@ st.markdown("""
         transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     }
     .glass-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(99,102,241,0.1);
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 15px 40px rgba(99,102,241,0.15), 0 0 20px rgba(99,102,241,0.05) inset;
+        border-color: rgba(99,102,241,0.3);
     }
 
     /* ── Metric Cards ── */
@@ -169,8 +199,9 @@ st.markdown("""
         background: linear-gradient(90deg, var(--accent-indigo), var(--accent-purple));
     }
     .metric-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 40px rgba(99,102,241,0.12);
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 45px rgba(139,92,246,0.15), 0 0 15px rgba(139,92,246,0.05) inset;
+        border-color: rgba(139,92,246,0.3);
     }
     .metric-icon {
         width: 42px; height: 42px; border-radius: 12px;
@@ -217,8 +248,9 @@ st.markdown("""
         transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     }
     .placement-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px var(--success-glow);
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 12px 35px var(--success-glow), 0 0 15px rgba(16,185,129,0.05) inset;
+        border-color: rgba(16,185,129,0.4);
     }
     .placement-card-warn {
         background: var(--bg-card);
@@ -230,11 +262,12 @@ st.markdown("""
         padding: 1.6rem;
         margin-bottom: 1rem;
         animation: fadeInUp 0.5s ease-out both;
-        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        transition: all var(--transition-smooth);
     }
     .placement-card-warn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px var(--warning-glow);
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 12px 35px var(--warning-glow), 0 0 15px rgba(245,158,11,0.05) inset;
+        border-color: rgba(245,158,11,0.4);
     }
     .placement-card-bad {
         background: var(--bg-card);
@@ -246,11 +279,12 @@ st.markdown("""
         padding: 1.6rem;
         margin-bottom: 1rem;
         animation: fadeInUp 0.5s ease-out both;
-        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        transition: all var(--transition-smooth);
     }
     .placement-card-bad:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px var(--danger-glow);
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 12px 35px var(--danger-glow), 0 0 15px rgba(239,68,68,0.05) inset;
+        border-color: rgba(239,68,68,0.4);
     }
     .placement-header {
         display: flex; justify-content: space-between;
@@ -724,20 +758,34 @@ if analyze_btn:
 
             from pipeline import run_full_pipeline
 
-            progress_box = st.empty()
-            progress_bar = st.progress(0)
+            # Custom loading UI
+            loading_container = st.empty()
+            
+            # Use columns to center the animation
+            with loading_container.container():
+                st.markdown("""
+                <div class="glass-card" style="text-align:center; padding:3rem; margin:2rem 0; animation: progressPulse 2s infinite;">
+                    <div style="font-size:2.5rem; animation: float 3s infinite ease-in-out; margin-bottom:1rem;">🔮</div>
+                    <div style="font-size:1.3rem; font-weight:700; color:var(--text-primary); margin-bottom:0.5rem;">
+                        Analyzing Video Content...
+                    </div>
+                    <div style="color:var(--accent-cyan); font-size:0.95rem; font-weight:600;" id="loading-msg">
+                        Processing frames and audio
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                progress_bar = st.progress(0)
+
             steps_done   = [0]
 
             def on_progress(msg):
-                progress_box.info(msg)
                 steps_done[0] += 1
                 progress_bar.progress(min(steps_done[0] / 4, 1.0))
 
             try:
-                with st.spinner("Analyzing your video... this takes 2–4 minutes ⏳"):
-                    run_full_pipeline(save_path, video_id, creds, progress_callback=on_progress)
+                run_full_pipeline(save_path, video_id, creds, progress_callback=on_progress)
                 progress_bar.progress(1.0)
-                progress_box.success("✅ Analysis complete!")
+                loading_container.empty()
                 st.session_state["analysis_done"] = True
                 st.rerun()
             except Exception as e:
