@@ -10,6 +10,7 @@ import json
 import math
 import pandas as pd
 import plotly.graph_objects as go
+import base64
 from PIL import Image
 from youtube_auth import get_credentials, show_login_button, logout
 
@@ -591,13 +592,23 @@ def build_retention_ring(percent, color, size=76):
               font-family="Inter, sans-serif">{percent:.0f}%</text>
     </svg>"""
 
+def get_base64_image(image_path):
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except Exception:
+        return ""
+
 
 # ═══════════════════════════════════════════════════════════════
 #  HERO HEADER
 # ═══════════════════════════════════════════════════════════════
-st.markdown("""
+favicon_b64 = get_base64_image("favicon.png")
+icon_html = f'<img src="data:image/png;base64,{favicon_b64}" style="height:1.2em; vertical-align:middle; margin-right:0.3rem;" />' if favicon_b64 else "🎯"
+
+st.markdown(f"""
 <div style="animation: fadeInUp 0.5s ease-out both;">
-    <div class="hero-title">🎯 Ad Placement Recommender</div>
+    <div class="hero-title">{icon_html} Ad Placement Recommender</div>
     <div class="hero-subtitle">
         Find the perfect moments in your video to place ads — so viewers stay happy and you earn more.
     </div>
