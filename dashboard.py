@@ -674,7 +674,7 @@ if creds is None:
                 <span class="trust-badge">🛡️ 256-bit Encrypted</span>
                 <span class="trust-badge">🚫 No Data Stored</span>
             </div>
-            <a href="{auth_url}" target="_self" class="login-btn">
+            <a href="{auth_url}" target="_blank" class="login-btn">
                 ▶ &nbsp; Sign in with YouTube
             </a>
             <div class="login-trust-line">

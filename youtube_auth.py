@@ -26,6 +26,9 @@ def get_client_config():
     raise FileNotFoundError("No Google credentials found.")
 
 def get_redirect_uri():
+    space_host = os.getenv("SPACE_HOST")
+    if space_host:
+        return f"https://{space_host}/"
     render_url = os.getenv("RENDER_EXTERNAL_URL")
     if render_url:
         return f"{render_url}/"
