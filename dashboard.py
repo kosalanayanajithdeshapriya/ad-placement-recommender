@@ -124,18 +124,26 @@ st.markdown("""
         100% { opacity: 0.6; box-shadow: 0 0 10px rgba(99,102,241,0.2); }
     }
 
-    /* ── Ambient Background Orbs ── */
+    /* ── Ambient Background Orbs & Grid ── */
+    [data-testid="stAppViewContainer"] {
+        background-color: var(--bg-primary);
+        background-image: 
+            radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-position: 0 0, 20px 20px;
+        background-size: 40px 40px;
+    }
     [data-testid="stAppViewContainer"]::before {
-        content: ''; position: fixed; top: -10%; left: -10%; width: 40vw; height: 40vw;
-        background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, rgba(10,14,26,0) 70%);
-        border-radius: 50%; filter: blur(60px); z-index: 0; pointer-events: none;
-        animation: orbFloat1 25s infinite ease-in-out alternate;
+        content: ''; position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+        background: radial-gradient(circle, rgba(99,102,241,0.25) 0%, rgba(10,14,26,0) 60%);
+        border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none;
+        animation: orbFloat1 20s infinite ease-in-out alternate;
     }
     [data-testid="stAppViewContainer"]::after {
-        content: ''; position: fixed; bottom: -10%; right: -10%; width: 50vw; height: 50vw;
-        background: radial-gradient(circle, rgba(34,211,238,0.05) 0%, rgba(10,14,26,0) 70%);
-        border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none;
-        animation: orbFloat2 30s infinite ease-in-out alternate-reverse;
+        content: ''; position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+        background: radial-gradient(circle, rgba(34,211,238,0.2) 0%, rgba(10,14,26,0) 60%);
+        border-radius: 50%; filter: blur(100px); z-index: 0; pointer-events: none;
+        animation: orbFloat2 25s infinite ease-in-out alternate-reverse;
     }
     .main .block-container { z-index: 1; position: relative; }
 
@@ -164,10 +172,10 @@ st.markdown("""
 
     /* ── Glass Card Base ── */
     .glass-card {
-        background: var(--bg-card);
-        backdrop-filter: blur(var(--glass-blur));
-        -webkit-backdrop-filter: blur(var(--glass-blur));
-        border: 1px solid var(--border-glass);
+        background: rgba(22, 28, 45, 0.5); /* More transparent to show background */
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: var(--radius-lg);
         padding: 1.8rem;
         animation: fadeInUp 0.5s ease-out both;
